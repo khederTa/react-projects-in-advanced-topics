@@ -1,6 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import useClickOutside from "../hooks/useClickOutside";
 const CustomModal = ({ isOpen, onClose, children }) => {
+  const modalRef = useRef(null);
+  useClickOutside(modalRef, onClose);
+
   useEffect(() => {
     const handler = (e) => {
       if (e.key === "Escape") onClose();
@@ -13,7 +17,9 @@ const CustomModal = ({ isOpen, onClose, children }) => {
   }, [onClose]);
   return createPortal(
     <div className={`modal-overlay ${isOpen && "show"}`}>
-      <div className="modal">{children}</div>
+      <div className="modal" ref={modalRef}>
+        {children}
+      </div>
     </div>,
     document.querySelector("#modal-container")
   );
